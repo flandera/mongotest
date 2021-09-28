@@ -8,27 +8,34 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 /**
  * @MongoDB\Document
  */
-class Post extends Entity
+class Post extends Entity implements \JsonSerializable
 {
+    public function __construct(string $title, string $contents, int $authorId)
+    {
+        parent::__construct();
+        $this->title = $title;
+        $this->contents = $contents;
+        $this->authorId = $authorId;
+    }
     /**
      * @MongoDB\Id
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $contents;
+    protected string $contents;
 
     /**
      * @MongoDB\Field(type="int")
      */
-    protected $authorId;
+    protected int $authorId;
 
     /**
      * @return string
@@ -36,16 +43,6 @@ class Post extends Entity
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    /**
-     * @param string $title
-     * @return Post
-     */
-    public function setTitle(string $title): Post
-    {
-        $this->title = $title;
-        return $this;
     }
 
     /**
@@ -57,16 +54,6 @@ class Post extends Entity
     }
 
     /**
-     * @param string $contents
-     * @return Post
-     */
-    public function setContents(string $contents): Post
-    {
-        $this->contents = $contents;
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getAuthorId(): int
@@ -75,13 +62,15 @@ class Post extends Entity
     }
 
     /**
-     * @param mixed $authorId
-     * @return Post
+     * @return int
      */
-    public function setAuthorId($authorId): Post
+    public function getId(): string
     {
-        $this->authorId = $authorId;
-        return $this;
+        return $this->id;
     }
 
+    public function jsonSerialize(): object
+    {
+        return (object) get_object_vars($this);
+    }
 }

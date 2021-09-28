@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Document\Post;
-use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Service\PostService;
+use App\Service\Validation\PostValidationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,33 +14,39 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
-    /**
-     * @var DocumentManager
-     */
-    private $documentManager;
-
-    public function __construct(DocumentManager $documentManager)
+    private PostValidationService $postValidationService;
+    private PostService $postService;
+    public function __construct(PostValidationService $postValidationService, PostService $postService)
     {
-        $this->documentManager = $documentManager;
+        $this->postValidationService = $postValidationService;
+        $this->postService = $postService;
     }
 
-    #[Route('/post', name: 'post')]
-    public function index(): Response
+    #[Route('/post/{id}', name: 'get_post')]
+    public function show(Request $request): Response
     {
-       return new JsonResponse(json_encode($this->documentManager->find(Post::class, 1)));
+        $id = $request->get('id');
+        try {
+            $post = $this->postService->findPost($id);
+        } catch (\Exception $e) {
+            return new JsonResponse('Error find post', 404);
+        }
+        return new JsonResponse($post, 200);
     }
 
     #[Route('/post/save', name: 'save')]
     public function save(Request $request): Response
     {
-        $post = new Post();
-        $resource = $request->getContent();
-        $content = json_decode($resource);
-        $post->setTitle($content->title);
-        $post->setContents($content->content);
-        $post->setAuthorId($content->authorId);
-        $this->documentManager->persist($post);
-        $this->documentManager->flush();
-        return new JsonResponse('Success', Response::HTTP_OK);
+        try {
+            $this->postValidationService->validateSavePost($request);
+        } catch (\Exception $e) {
+            return new JsonResponse('Validation error:' . $e->getMessage(), 400);
+        }
+        try {
+            $post = $this->postService->savePost($request);
+        } catch (\Exception $e) {
+            return new JsonResponse('Error while saving entity: ' . $e->getMessage(), 403);
+        }
+        return new JsonResponse('Post id: ' . $post->getId(), Response::HTTP_OK);
     }
 }
