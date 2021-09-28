@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "d0230164-c19c-4277-a768-f7d45a5d9e6e",
+		"name": "MongoTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "savePost",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"title\": \"test1\",\r\n\"content\": \"neco neco\",\r\n\"author_id\": 21\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8086/post/save",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"post",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get post",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}
