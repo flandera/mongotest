@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Repository;
 
 use App\Document\Post;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\MongoDBException;
 use Symfony\Component\HttpFoundation\Request;
 
-class PostService
+class PostRepository
 {
     protected DocumentManager $documentManager;
 
@@ -16,7 +18,7 @@ class PostService
     }
 
     /**
-     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     * @throws MongoDBException
      */
     public function savePost(Request $request): Post
     {
@@ -32,7 +34,7 @@ class PostService
         return $post;
     }
 
-    public function findPost($id): Post
+    public function findPost($id): ?Post
     {
         return $this->documentManager->find(Post::class, $id);
     }

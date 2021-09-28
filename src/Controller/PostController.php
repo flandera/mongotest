@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\PostService;
+use App\Repository\PostRepository;
 use App\Service\Validation\PostValidationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,8 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     private PostValidationService $postValidationService;
-    private PostService $postService;
-    public function __construct(PostValidationService $postValidationService, PostService $postService)
+    private PostRepository $postService;
+    public function __construct(PostValidationService $postValidationService, PostRepository $postService)
     {
         $this->postValidationService = $postValidationService;
         $this->postService = $postService;
@@ -26,11 +26,11 @@ class PostController extends AbstractController
     public function show(Request $request): Response
     {
         $id = $request->get('id');
-        try {
-            $post = $this->postService->findPost($id);
-        } catch (\Exception $e) {
-            return new JsonResponse('Error find post', 404);
+        $post = $this->postService->findPost($id);
+        if ($post === null) {
+            return new JsonResponse('Post not found', 404);
         }
+
         return new JsonResponse($post, 200);
     }
 
