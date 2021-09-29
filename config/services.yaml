@@ -6,6 +6,7 @@
 parameters:
     env(MONGODB_URL): 'mongodb://root:test@mongo:27017/'
     env(MONGODB_DB): 'test'
+    pageSize: '%env(int:PAGE_SIZE)%'
 
 services:
     # default configuration for services in *this* file
@@ -25,3 +26,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Repository\PostRepository:
+        arguments:
+            $pageSize: '%pageSize%'

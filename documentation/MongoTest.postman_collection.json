@@ -33,7 +33,30 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": null
+				"url": {
+					"raw": "localhost:8086/post?title=test1&page=1&authorId=21",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"post"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "test1"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "21"
+						}
+					]
+				}
 			},
 			"response": []
 		}

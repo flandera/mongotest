@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Repository;
@@ -11,10 +12,12 @@ use Symfony\Component\HttpFoundation\Request;
 class PostRepository
 {
     protected DocumentManager $documentManager;
+    private int $pageSize;
 
-    public function __construct(DocumentManager $documentManager)
+    public function __construct(DocumentManager $documentManager, int $pageSize)
     {
         $this->documentManager = $documentManager;
+        $this->pageSize = $pageSize;
     }
 
     /**
@@ -34,8 +37,14 @@ class PostRepository
         return $post;
     }
 
-    public function findPost($id): ?Post
+    /**
+     * @param array <string> $params
+     * @param int $page
+     * @return array<Post>|null
+     */
+    public function findPost(array $params, int $page): ?array
     {
-        return $this->documentManager->find(Post::class, $id);
+        $repository = $this->documentManager->getRepository(Post::class);
+        return $repository->findBy($params, ['authorId' => 'ASC'], $this->pageSize, $page * $this->pageSize);
     }
 }

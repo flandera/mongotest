@@ -1,17 +1,20 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use JsonSerializable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 /** @MongoDB\Document */
-class Post extends Entity implements \JsonSerializable
+class Post extends Entity implements JsonSerializable
 {
     public function __construct(string $title, string $contents, int $authorId)
     {
         parent::__construct();
+
         $this->title = $title;
         $this->contents = $contents;
         $this->authorId = $authorId;
@@ -27,21 +30,6 @@ class Post extends Entity implements \JsonSerializable
 
     /** @MongoDB\Field(type="int") */
     protected int $authorId;
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getContents(): string
-    {
-        return $this->contents;
-    }
-
-    public function getAuthorId(): int
-    {
-        return $this->authorId;
-    }
 
     public function getId(): string
     {
